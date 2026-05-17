@@ -148,6 +148,11 @@ async function restorePlayerDataFromFirebase(playerId) {
         petAdopted = fields.petAdopted?.booleanValue || false;
         
         console.log("✅ Restored balance from Firebase:", balance);
+        
+        // Save restored data to localStorage so it persists
+        savePetData();
+        console.log("💾 Restored data saved to localStorage");
+        
         return true;
       }
     } else {
@@ -1186,13 +1191,28 @@ document.addEventListener("DOMContentLoaded", async function() {
     alert("⚠️ Warning: localStorage not available! Data may not save properly in this environment.");
   }
   
-  // One-time migration: clear old localStorage only on first load of new version
+  // One-time migration: convert old keys to v2 keys
   const migrationFlag = localStorage.getItem("migrationDone_v2");
   if (!migrationFlag) {
-    console.log("🧹 First load of new version - clearing old localStorage...");
-    localStorage.clear();
+    console.log("🧹 First load - migrating to v2 keys...");
+    
+    // Migrate old data to new keys if it exists
+    const oldGameState = localStorage.getItem("iggyGameState");
+    const oldName = localStorage.getItem("iggyPlayerName");
+    const oldId = localStorage.getItem("iggyPlayerId");
+    
+    if (oldGameState) localStorage.setItem("iggyGameState_v2", oldGameState);
+    if (oldName) localStorage.setItem("iggyPlayerName_v2", oldName);
+    if (oldId) localStorage.setItem("iggyPlayerId_v2", oldId);
+    
+    // Clean up old keys
+    localStorage.removeItem("iggyGameState");
+    localStorage.removeItem("iggyPlayerName");
+    localStorage.removeItem("iggyPlayerId");
+    
+    // Set migration flag so we don't do this again
     localStorage.setItem("migrationDone_v2", "true");
-    console.log("✅ Fresh start initialized - migration flag set");
+    console.log("✅ Migration complete - old data preserved");
   } else {
     console.log("✅ Migration already done - normal load");
   }
