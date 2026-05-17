@@ -163,28 +163,35 @@ async function restorePlayerDataFromFirebase(playerId) {
 // ========== STORAGE FUNCTIONS ==========
 
 function formatLargeNumber(numStr) {
-  const num = BigInt(numStr);
-  
-  // Define suffixes for large numbers
-  const suffixes = [
-    { value: 1000000000000000000000000n, suffix: "Y" },  // Septillion
-    { value: 1000000000000000000000n, suffix: "Z" },     // Sextillion
-    { value: 1000000000000000000n, suffix: "E" },        // Quintillion
-    { value: 1000000000000000n, suffix: "P" },           // Quadrillion
-    { value: 1000000000000n, suffix: "T" },              // Trillion
-    { value: 1000000000n, suffix: "B" },                 // Billion
-    { value: 1000000n, suffix: "M" },                    // Million
-    { value: 1000n, suffix: "K" }                        // Thousand
-  ];
-  
-  for (let i = 0; i < suffixes.length; i++) {
-    if (num >= suffixes[i].value) {
-      const divided = Number(num * 100n / suffixes[i].value) / 100;
-      return divided.toFixed(2) + suffixes[i].suffix;
+  try {
+    if (!numStr || numStr === "0" || numStr === "") return "0";
+    
+    const num = BigInt(numStr);
+    
+    // Define suffixes for large numbers
+    const suffixes = [
+      { value: 1000000000000000000000000n, suffix: "Y" },  // Septillion
+      { value: 1000000000000000000000n, suffix: "Z" },     // Sextillion
+      { value: 1000000000000000000n, suffix: "E" },        // Quintillion
+      { value: 1000000000000000n, suffix: "P" },           // Quadrillion
+      { value: 1000000000000n, suffix: "T" },              // Trillion
+      { value: 1000000000n, suffix: "B" },                 // Billion
+      { value: 1000000n, suffix: "M" },                    // Million
+      { value: 1000n, suffix: "K" }                        // Thousand
+    ];
+    
+    for (let i = 0; i < suffixes.length; i++) {
+      if (num >= suffixes[i].value) {
+        const divided = Number(num * 100n / suffixes[i].value) / 100;
+        return divided.toFixed(2) + suffixes[i].suffix;
+      }
     }
+    
+    return num.toString();
+  } catch (error) {
+    console.error("❌ Error in formatLargeNumber:", error, "Input:", numStr);
+    return numStr || "0";
   }
-  
-  return num.toString();
 }
 
 function saveData(key, value) {
@@ -991,18 +998,24 @@ function displayPlayerName() {
 }
 
 function updateBalanceUI() {
-  const balanceBox = document.getElementById("balance");
-  if (balanceBox) {
-    balanceBox.innerText = formatLargeNumber(balance.toString());
-  }
+  try {
+    const balanceBox = document.getElementById("balance");
+    if (balanceBox) {
+      const formatted = formatLargeNumber(balance.toString());
+      balanceBox.innerText = formatted;
+      console.log("💰 Balance updated:", balance, "→", formatted);
+    }
 
-  const profileBalance = document.getElementById("profileBalance");
-  if (profileBalance) {
-    profileBalance.innerText = formatLargeNumber(balance.toString()) + " pts";
-  }
-  
-  if (!petAdopted && balance >= 500000) {
-    alert("🦎 CONGRATULATIONS! You've reached 500k points!\n\n⚠️ You must now ADOPT Iggy to continue playing games and earning more!");
+    const profileBalance = document.getElementById("profileBalance");
+    if (profileBalance) {
+      profileBalance.innerText = formatLargeNumber(balance.toString()) + " pts";
+    }
+    
+    if (!petAdopted && balance >= 500000) {
+      alert("🦎 CONGRATULATIONS! You've reached 500k points!\n\n⚠️ You must now ADOPT Iggy to continue playing games and earning more!");
+    }
+  } catch (error) {
+    console.error("❌ Error in updateBalanceUI:", error);
   }
 }
 
@@ -1162,7 +1175,7 @@ function activeLBTab(el) {
 
 // ========== INITIALIZATION ==========
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
   // Check localStorage availability
   try {
     localStorage.setItem("test", "test");
