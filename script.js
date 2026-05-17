@@ -1126,11 +1126,16 @@ document.addEventListener("DOMContentLoaded", function() {
     alert("⚠️ Warning: localStorage not available! Data may not save properly in this environment.");
   }
   
-  // Clean up old localStorage keys from previous version
-  console.log("🧹 Cleaning up old localStorage entries...");
-  localStorage.removeItem("iggyGameState");
-  localStorage.removeItem("iggyPlayerName");
-  localStorage.removeItem("iggyPlayerId");
+  // One-time migration: clear old localStorage only on first load of new version
+  const migrationFlag = localStorage.getItem("migrationDone_v2");
+  if (!migrationFlag) {
+    console.log("🧹 First load of new version - clearing old localStorage...");
+    localStorage.clear();
+    localStorage.setItem("migrationDone_v2", "true");
+    console.log("✅ Fresh start initialized - migration flag set");
+  } else {
+    console.log("✅ Migration already done - normal load");
+  }
   
   loadPetData();
   
