@@ -369,8 +369,15 @@ function stopMining() {
     
     miningActive = false;
     if (miningEarnings > 0) {
-      balance += miningEarnings;
-      pet.wealth += miningEarnings;
+      // Handle string balance for large numbers
+      if (typeof balance === 'string') {
+        balance = (BigInt(balance) + BigInt(miningEarnings)).toString();
+        pet.wealth = (BigInt(pet.wealth) + BigInt(miningEarnings)).toString();
+      } else {
+        balance += miningEarnings;
+        pet.wealth += miningEarnings;
+      }
+      
       alert("⛏️ Mining stopped! You earned " + miningEarnings + " pts from mining!");
       miningEarnings = 0;
       miningStartTime = 0;
@@ -384,8 +391,16 @@ setInterval(() => {
   if (miningActive) {
     const miningSpeed = getMiningSpeed();
     miningEarnings += miningSpeed;
-    balance += miningSpeed;
-    pet.wealth += miningSpeed;
+    
+    // Handle string balance for large numbers
+    if (typeof balance === 'string') {
+      balance = (BigInt(balance) + BigInt(Math.floor(miningSpeed))).toString();
+      pet.wealth = (BigInt(pet.wealth) + BigInt(Math.floor(miningSpeed))).toString();
+    } else {
+      balance += miningSpeed;
+      pet.wealth += miningSpeed;
+    }
+    
     updateBalanceUI();
     savePetData();
   }
@@ -757,8 +772,15 @@ function cashout() {
     console.log("  Crash Multiplier:", multiplier + "x");
     console.log("  Total Winnings:", winnings);
     
-    balance += winnings;
-    pet.wealth += winnings;
+    // Handle string balance for large numbers
+    if (typeof balance === 'string') {
+      balance = (BigInt(balance) + BigInt(winnings)).toString();
+      pet.wealth = (BigInt(pet.wealth) + BigInt(winnings)).toString();
+    } else {
+      balance += winnings;
+      pet.wealth += winnings;
+    }
+    
     updateBalanceUI();
     savePetData();
     uploadPlayerData();
@@ -852,8 +874,15 @@ function flipCoin() {
           console.log("  Pet Multiplier:", petBonus.toFixed(2) + "x");
           console.log("  Total Winnings:", winnings);
           
-          balance += winnings;
-          pet.wealth += winnings;
+          // Handle string balance for large numbers
+          if (typeof balance === 'string') {
+            balance = (BigInt(balance) + BigInt(winnings)).toString();
+            pet.wealth = (BigInt(pet.wealth) + BigInt(winnings)).toString();
+          } else {
+            balance += winnings;
+            pet.wealth += winnings;
+          }
+          
           updateBalanceUI();
           savePetData();
           uploadPlayerData();
@@ -955,14 +984,9 @@ function loadPetData() {
     petAdopted = gameState.petAdopted || false;
     pet = gameState.pet || pet;
     
-    // Handle both old number format and new string format for backward compatibility
-    if (typeof gameState.balance === 'string') {
-      balance = BigInt(gameState.balance) > BigInt(Number.MAX_SAFE_INTEGER) 
-        ? gameState.balance 
-        : Number(gameState.balance);
-    } else {
-      balance = gameState.balance || 10000;
-    }
+    // Always ensure balance is a number
+    balance = Number(gameState.balance) || 10000;
+    console.log("✅ Loaded balance:", balance, "Type:", typeof balance);
     
     totalInvestedInPet = gameState.totalInvestedInPet || 0;
     console.log("✅ Loaded totalInvestedInPet:", totalInvestedInPet);
@@ -981,18 +1005,8 @@ function loadPetData() {
         const miningSpeed = getMiningSpeed();
         const offlineEarnings = elapsedSecs * miningSpeed;
         
-        if (typeof balance === 'string') {
-          balance = (BigInt(balance) + BigInt(offlineEarnings)).toString();
-        } else {
-          balance += offlineEarnings;
-        }
-        
-        if (typeof pet.wealth === 'string') {
-          pet.wealth = (BigInt(pet.wealth) + BigInt(offlineEarnings)).toString();
-        } else {
-          pet.wealth += offlineEarnings;
-        }
-        
+        balance += offlineEarnings;
+        pet.wealth += offlineEarnings;
         miningEarnings += offlineEarnings;
         miningStartTime = now;
         
@@ -1003,18 +1017,21 @@ function loadPetData() {
 }
 
 function savePetData() {
+  // Ensure balance is a number before saving
+  let balanceToSave = typeof balance === 'string' ? Number(balance) : balance;
+  
   const gameState = {
     petAdopted: petAdopted,
     pet: pet,
     totalInvestedInPet: totalInvestedInPet,
     playerItems: playerItems,
-    balance: balance,
+    balance: balanceToSave,  // Always save as number
     miningActive: miningActive,
     miningEarnings: miningEarnings,
     miningStartTime: miningStartTime
   };
   saveData("iggyGameState_v2", gameState);
-  console.log("💾 Game state saved with totalInvestedInPet:", totalInvestedInPet);
+  console.log("💾 Game state saved - Balance:", balanceToSave, "Type:", typeof balanceToSave);
 }
 
 function decayStats() {
@@ -1193,9 +1210,3 @@ document.addEventListener("DOMContentLoaded", function() {
   
   console.log("✅ Game initialized successfully!");
 });
-
-// Reset for new bot deployment in Telegram
-if (tg && tg.initDataUnsafe) {
-  localStorage.clear();
-  console.log("🧹 Telegram Mini App: Full localStorage clear for fresh start");
-}
