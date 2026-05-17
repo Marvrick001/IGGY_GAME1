@@ -950,7 +950,7 @@ function updateBalanceUI() {
 // ========== DATA PERSISTENCE ==========
 
 function loadPetData() {
-  const gameState = loadData("iggyGameState");
+  const gameState = loadData("iggyGameState_v2");
   if (gameState) {
     petAdopted = gameState.petAdopted || false;
     pet = gameState.pet || pet;
@@ -1013,7 +1013,7 @@ function savePetData() {
     miningEarnings: miningEarnings,
     miningStartTime: miningStartTime
   };
-  saveData("iggyGameState", gameState);
+  saveData("iggyGameState_v2", gameState);
   console.log("💾 Game state saved with totalInvestedInPet:", totalInvestedInPet);
 }
 
@@ -1128,8 +1128,8 @@ document.addEventListener("DOMContentLoaded", function() {
   
   loadPetData();
   
-  const savedName = loadData("iggyPlayerName");
-  const savedPlayerId = loadData("iggyPlayerId");
+  const savedName = loadData("iggyPlayerName_v2");
+  const savedPlayerId = loadData("iggyPlayerId_v2");
   
   if (savedName) {
     playerName = savedName;
@@ -1157,8 +1157,8 @@ document.addEventListener("DOMContentLoaded", function() {
       playerName = "Test Player";
       playerId = "test_" + Math.random().toString(36).substr(2, 9);
     }
-    saveData("iggyPlayerName", playerName);
-    saveData("iggyPlayerId", playerId);
+    saveData("iggyPlayerName_v2", playerName);
+    saveData("iggyPlayerId_v2", playerId);
   }
   
   console.log("📝 Current Player:", { playerId, playerName });
