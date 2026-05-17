@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Iggy Game</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-top">
+      <h1 class="app-title">🦎 Iggy</h1>
+      <div class="balance-display">
+        <span id="balance">100,000</span>
+        <span class="pts">pts</span>
+      </div>
+    </div>
+    <div class="user-info">
+      <p id="playerName">🤖 Loading Telegram...</p>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="showPage('home'); activeTab(this)">🏠 Home</button>
+    <button class="tab-btn" onclick="showPage('profile'); activeTab(this)">📊 Profile</button>
+    <button class="tab-btn" onclick="showPage('petshop'); activeTab(this)">🛒 Shop</button>
+    <button class="tab-btn" onclick="showPage('games'); activeTab(this)">🎮 Games</button>
+    <button class="tab-btn" onclick="showPage('leaderboard'); activeTab(this)">🏆 Leaderboard</button>
+  </nav>
+
+  <!-- Pages Container -->
+  <main class="content">
+    <!-- Home Page -->
+    <div id="home" class="page active">
+      <div class="card">
+        <h2>Welcome to Iggy</h2>
+        <p style="margin: 0; font-size: 13px; opacity: 0.8; line-height: 1.5;">🦎 Adopt your pet, mine for free, play games, and build your fortune! Earn passive income while offline and watch your multipliers grow!</p>
+      </div>
+
+      <div class="card">
+        <h3>How to Play</h3>
+        <div class="rules-list">
+          <div class="rule-item">
+            <span class="rule-num">1</span>
+            <span class="rule-text"><strong>Adopt Iggy:</strong> Pay 50K to adopt your pet (required for everything!)</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-num">2</span>
+            <span class="rule-text"><strong>Feed & Hydrate:</strong> Keep hunger/thirst above 0 to play games</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-num">3</span>
+            <span class="rule-text"><strong>Start Mining:</strong> Earn 1 point/sec FREE (works even when offline!)</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-num">4</span>
+            <span class="rule-text"><strong>Play Games:</strong> Crash (predict when rocket crashes) or Flip (heads/tails)</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-num">5</span>
+            <span class="rule-text"><strong>Upgrade Pet:</strong> Every 5 levels = +0.5x multiplier (Levels 1-4: 1.0x, 5-9: 1.5x, etc)</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-num">6</span>
+            <span class="rule-text"><strong>Mining:</strong> Earns based on pet level (1-4: 1 pts/sec, 5-10: 10 pts/sec) - Works offline!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Game Modes</h3>
+        <div class="game-info">
+          <div class="info-item">
+            <span class="info-icon">🚀</span>
+            <div class="info-content">
+              <strong>Crash</strong>
+              <p>Watch the rocket climb with a glowing aura! Cash out before it crashes. Winnings = Bet × Multiplier × Pet Multiplier!</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">🪙</span>
+            <div class="info-content">
+              <strong>Flip</strong>
+              <p>Flip a coin - heads doubles your bet, tails you lose it. Same multiplier system as Crash!</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">⛏️</span>
+            <div class="info-content">
+              <strong>Mining</strong>
+              <p>FREE passive income! Earn 1 point every second. Works even when you're offline!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Rules & Tips</h3>
+        <div class="rules-list">
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text"><strong>MUST ADOPT:</strong> Pay 50K first or you can't do anything!</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text">Hunger & thirst decrease over time (feed/hydrate to keep playing)</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text">Each game costs 10 hunger + 15 thirst</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text">Mining is FREE and the best way to start earning (no cost!)</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text">Multiplier = (Game Multiplier) × (Pet Level Multiplier)</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text">Pet Wealth tracks your total investments & earnings</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text">Mining earns more at higher pet levels</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet">•</span>
+            <span class="rule-text">Rocket glows brighter as multiplier increases! 🟢</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile" class="page">
+      <div class="card">
+        <h2>Player Info</h2>
+        <div class="profile-stats">
+          <div class="stat-item">
+            <span class="label">Telegram Username</span>
+            <span id="profileName" class="value">Loading...</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">Level</span>
+            <span id="profileLevel" class="value">1</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">Multiplier</span>
+            <span id="profileMultiplier" class="value">1.0x</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">Balance</span>
+            <span id="profileBalance" class="value">100,000 pts</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">Total Invested</span>
+            <span id="profileInvested" class="value">0 pts</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card pet-status">
+        <h2>Pet Status</h2>
+        <div class="stat-row">
+          <span>Adoption Status</span>
+          <strong id="adoptionStatus">Not Adopted</strong>
+        </div>
+        <div class="stat-row">
+          <span>Level</span>
+          <strong id="petLevel">1</strong>
+        </div>
+        <div class="stat-row">
+          <span>Multiplier</span>
+          <strong id="petMultiplier">1.0x</strong>
+        </div>
+        <div class="stat-row">
+          <span id="miningSpeedDisplay">⛏️ Mining Speed: 1.0 pts/sec</span>
+        </div>
+        <div class="stat-row">
+          <span id="miningDisplay">⛏️ Mining: Inactive</span>
+        </div>
+        <div class="stat-row">
+          <span id="miningEarningsDisplay">Session Earnings: 0 pts</span>
+        </div>
+        <div class="stat-row">
+          <span id="petWealthDisplay">Pet Wealth: 0 pts</span>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Hunger</span>
+            <span id="hungerPercent">100%</span>
+          </div>
+          <div class="bar"><div id="hungerBar" style="width: 100%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Thirst</span>
+            <span id="thirstPercent">100%</span>
+          </div>
+          <div class="bar"><div id="thirstBar" style="width: 100%"></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Luxury Items</h2>
+        <p id="playerStatus" class="items-text">None owned yet</p>
+      </div>
+    </div>
+
+    <!-- Shop Page -->
+    <div id="petshop" class="page">
+      <div class="card">
+        <h3>🦎 Pet Adoption</h3>
+        <div class="shop-grid">
+          <button class="shop-btn" onclick="adoptPet()">
+            <span>🦎</span>
+            <span>Adopt Pet</span>
+            <span class="price">50K</span>
+          </button>
+        </div>
+        <p style="font-size: 12px; color: #aaa; margin: 8px 0 0 0;">Required to play games and upgrade Iggy!</p>
+      </div>
+
+      <div class="card">
+        <h3>Pet Essentials</h3>
+        <div class="shop-grid">
+          <button class="shop-btn" onclick="buyFood()">
+            <span>🍖</span>
+            <span>Food</span>
+            <span class="price">5K</span>
+          </button>
+          <button class="shop-btn" onclick="buyWater()">
+            <span>💧</span>
+            <span>Water</span>
+            <span class="price">3K</span>
+          </button>
+          <button class="shop-btn" onclick="upgradePet()">
+            <span>⬆️</span>
+            <span>Upgrade</span>
+            <span class="price">Var</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>⛏️ Mining Bonus</h3>
+        <div class="shop-grid">
+          <button class="shop-btn" onclick="alert('⛏️ Mining speed scales with your pet level!\n\nLevel 1-4: 1 pt/sec\nLevel 5-10: 10 pts/sec\nLevel 11+: Continues scaling!\n\nWorks even when offline!')" style="cursor: pointer; opacity: 0.8;">
+            <span>⛏️</span>
+            <span>Mining Boost</span>
+            <span class="price">Passive</span>
+          </button>
+        </div>
+        <p style="font-size: 12px; color: #aaa; margin: 8px 0 0 0;">Scales with pet level. Mines even when you're offline!</p>
+      </div>
+
+      <div class="card">
+        <h3>⛏️ Mining</h3>
+        <div class="shop-grid">
+          <button class="shop-btn" onclick="startMining()">
+            <span>⛏️</span>
+            <span>Start Mining</span>
+            <span class="price">FREE</span>
+          </button>
+          <button class="shop-btn" onclick="stopMining()">
+            <span>✋</span>
+            <span>Stop Mining</span>
+            <span class="price">FREE</span>
+          </button>
+        </div>
+        <p style="font-size: 12px; color: #aaa; margin: 8px 0 0 0;">Earn 1 point every second passively! No cost, totally free!</p>
+      </div>
+
+      <div class="card">
+        <h3>Status Items</h3>
+        <div class="shop-grid">
+          <button class="shop-btn" onclick="buyDesignerHoodie()"><span>👕</span><span>Hoodie</span><span class="price">50K</span></button>
+          <button class="shop-btn" onclick="buyGoldCrown()"><span>👑</span><span>Crown</span><span class="price">75K</span></button>
+          <button class="shop-btn" onclick="buyDiamondRing()"><span>💍</span><span>Ring</span><span class="price">100K</span></button>
+          <button class="shop-btn" onclick="buyLuxuryChain()"><span>⛓️</span><span>Chain</span><span class="price">60K</span></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Mega Items</h3>
+        <div class="shop-grid">
+          <button class="shop-btn" onclick="buyRolex()"><span>⌚</span><span>Rolex</span><span class="price">80K</span></button>
+          <button class="shop-btn" onclick="buyGWagon()"><span>🚙</span><span>G Wagon</span><span class="price">150K</span></button>
+          <button class="shop-btn" onclick="buyGoldenLambo()"><span>🏎️</span><span>Lambo</span><span class="price">250K</span></button>
+          <button class="shop-btn" onclick="buyMansion()"><span>🏛️</span><span>Mansion</span><span class="price">500K</span></button>
+          <button class="shop-btn" onclick="buyPrivateJet()"><span>✈️</span><span>Jet</span><span class="price">1M</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Games Page -->
+    <div id="games" class="page">
+      <div class="games-tabs">
+        <button class="game-tab active" onclick="showTab('crash'); activeGameTab(this)">🚀 Crash</button>
+        <button class="game-tab" onclick="showTab('flip'); activeGameTab(this)">🪙 Flip</button>
+      </div>
+
+      <!-- Crash Game -->
+      <div id="crash" class="game-container active">
+        <div class="game-display">
+          <div id="sky">
+            <img id="rocket" src="assets/iggy-rocket.png" alt="Iggy Rocket">
+          </div>
+          <div class="multiplier-display">
+            <span id="multiplier">1.0x</span>
+          </div>
+        </div>
+        <p id="crashResult" class="game-result"></p>
+        <div class="game-controls">
+          <button class="btn-primary" onclick="startCrash()">Start</button>
+          <button class="btn-secondary" onclick="cashout()">Cashout</button>
+        </div>
+        <div class="bet-section">
+          <div class="bet-label">Bet Amount</div>
+          <div class="bet-buttons">
+            <button onclick="setBet(10000)">10K</button>
+            <button onclick="setBet(30000)">30K</button>
+            <button onclick="setBet(50000)">50K</button>
+            <button onclick="setBet(100000)">100K</button>
+            <button onclick="setBet('custom')">Custom</button>
+          </div>
+          <div id="selectedBet" class="bet-display">Bet: 0 pts</div>
+        </div>
+      </div>
+
+      <!-- Flip Game -->
+      <div id="flip" class="game-container">
+        <div class="game-display">
+          <img id="coin" src="assets/iggy-head.png" class="coin" alt="Iggy Coin">
+        </div>
+        <p id="flipResult" class="game-result"></p>
+        <div class="game-controls">
+          <div style="margin-bottom: 15px;">
+            <p style="font-size: 14px; color: #aaa; margin: 0 0 10px 0;">Choose your prediction:</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+              <button class="btn-secondary" id="chooseHeads" onclick="chooseFlipSide('heads')">🌕 Heads</button>
+              <button class="btn-secondary" id="chooseTails" onclick="chooseFlipSide('tails')">🌑 Tails</button>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="flipCoin()">Flip Coin</button>
+        </div>
+        <div class="bet-section">
+          <div class="bet-label">Bet Amount</div>
+          <div class="bet-buttons">
+            <button onclick="setBet(10000)">10K</button>
+            <button onclick="setBet(30000)">30K</button>
+            <button onclick="setBet(50000)">50K</button>
+            <button onclick="setBet(100000)">100K</button>
+            <button onclick="setBet('custom')">Custom</button>
+          </div>
+          <div id="selectedBetFlip" class="bet-display">Bet: 0 pts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Page -->
+    <div id="leaderboard" class="page">
+      <div class="leaderboard-tabs">
+        <button class="lb-tab active" onclick="showLeaderboard('points'); activeLBTab(this)">💰 Points</button>
+        <button class="lb-tab" onclick="showLeaderboard('level'); activeLBTab(this)">📈 Level</button>
+      </div>
+
+      <!-- Points Leaderboard -->
+      <div id="points-lb" class="leaderboard-container active">
+        <div class="leaderboard-list" id="pointsLeaderboard">
+          <p style="text-align: center; padding: 20px; color: #aaa;">Loading leaderboard...</p>
+        </div>
+      </div>
+
+      <!-- Level Leaderboard -->
+      <div id="level-lb" class="leaderboard-container">
+        <div class="leaderboard-list" id="levelLeaderboard">
+          <p style="text-align: center; padding: 20px; color: #aaa;">Loading leaderboard...</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: 20px;">
+        <button class="btn-primary" onclick="refreshLeaderboards()">🔄 Refresh</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Firebase SDK - Removed due to module compatibility issues, using localStorage instead -->
+  
+  <script src="script.js"></script>
+  <script>
+    function activeTab(el) {
+      document.querySelectorAll('.tab-nav .tab-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function activeGameTab(el) {
+      document.querySelectorAll('.games-tabs .game-tab').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+  </script>
+</body>
+</html>

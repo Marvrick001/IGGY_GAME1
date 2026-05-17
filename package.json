@@ -1,0 +1,13 @@
+{
+  "name": "iggy-game",
+  "version": "1.0.0",
+  "description": "Iggy Mini App Game with Firebase Leaderboard",
+  "main": "script.js",
+  "type": "module",
+  "scripts": {
+    "start": "node -e \"console.log('Game is running. Open index.html in your browser.')\""
+  },
+  "dependencies": {
+    "firebase": "^10.7.0"
+  }
+}
