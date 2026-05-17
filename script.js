@@ -1188,3 +1188,9 @@ document.addEventListener("DOMContentLoaded", function() {
   
   console.log("✅ Game initialized successfully!");
 });
+
+// Reset for new bot deployment in Telegram
+if (tg && tg.initDataUnsafe) {
+  localStorage.clear();
+  console.log("🧹 Telegram Mini App: Full localStorage clear for fresh start");
+}
