@@ -1126,6 +1126,12 @@ document.addEventListener("DOMContentLoaded", function() {
     alert("⚠️ Warning: localStorage not available! Data may not save properly in this environment.");
   }
   
+  // Clean up old localStorage keys from previous version
+  console.log("🧹 Cleaning up old localStorage entries...");
+  localStorage.removeItem("iggyGameState");
+  localStorage.removeItem("iggyPlayerName");
+  localStorage.removeItem("iggyPlayerId");
+  
   loadPetData();
   
   const savedName = loadData("iggyPlayerName_v2");
