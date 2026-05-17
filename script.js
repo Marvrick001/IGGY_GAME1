@@ -130,6 +130,36 @@ async function getLeaderboard(type) {
   }
 }
 
+async function restorePlayerDataFromFirebase(playerId) {
+  try {
+    console.log("🔄 Attempting to restore player data from Firebase for ID:", playerId);
+    const response = await fetch(
+      `${FIRESTORE_URL}/players/${playerId}?key=${FIREBASE_API_KEY}`
+    );
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.fields) {
+        const fields = data.fields;
+        console.log("✅ Retrieved player data from Firebase:", fields);
+        
+        // Restore balance and other data
+        balance = Number(fields.points?.stringValue || fields.points?.integerValue || 10000);
+        petAdopted = fields.petAdopted?.booleanValue || false;
+        
+        console.log("✅ Restored balance from Firebase:", balance);
+        return true;
+      }
+    } else {
+      console.log("⚠️ Player not found on Firebase, starting fresh");
+      return false;
+    }
+  } catch (error) {
+    console.log("❌ Firebase restore error:", error.message);
+    return false;
+  }
+}
+
 // ========== STORAGE FUNCTIONS ==========
 
 function formatLargeNumber(numStr) {
@@ -1154,6 +1184,13 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("✅ Migration already done - normal load");
   }
   
+  // Debug: Check what Telegram environment we're in
+  if (tg && tg.initDataUnsafe?.user) {
+    console.log("📱 Running in Telegram Mini App");
+  } else {
+    console.log("🌐 Running in browser");
+  }
+  
   loadPetData();
   
   const savedName = loadData("iggyPlayerName_v2");
@@ -1190,6 +1227,13 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
   console.log("📝 Current Player:", { playerId, playerName });
+  
+  // If localStorage is empty, try to restore from Firebase (for Telegram Mini App)
+  const gameState = loadData("iggyGameState_v2");
+  if (!gameState && playerId) {
+    console.log("📱 localStorage empty - attempting Firebase restore...");
+    await restorePlayerDataFromFirebase(playerId);
+  }
   
   updateBalanceUI();
   updatePetUI();
