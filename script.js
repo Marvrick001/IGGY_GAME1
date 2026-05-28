@@ -1113,7 +1113,8 @@ function getBadgeForPoints(pointsStr) {
       { value: 1000000000000n, emoji: "💎" },              // Diamond
       { value: 1000000000n, emoji: "🥇" },                 // Gold
       { value: 1000000n, emoji: "🥈" },                    // Silver
-      { value: 1000n, emoji: "🥉" }                        // Bronze
+      { value: 1000n, emoji: "🥉" },                       // Bronze
+      { value: 1n, emoji: "⭐" }                           // Starter (even 1 point)
     ];
     
     for (let i = 0; i < badges.length; i++) {
@@ -1123,6 +1124,7 @@ function getBadgeForPoints(pointsStr) {
     }
     return "";
   } catch (error) {
+    console.error("❌ Badge error:", error, "points:", pointsStr);
     return "";
   }
 }
