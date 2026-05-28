@@ -173,22 +173,22 @@ function formatLargeNumber(numStr) {
     
     const num = BigInt(numStr);
     
-    // Define suffixes for large numbers
+    // Define suffixes for large numbers with badge tiers
     const suffixes = [
-      { value: 1000000000000000000000000n, suffix: "Y" },  // Septillion
-      { value: 1000000000000000000000n, suffix: "Z" },     // Sextillion
-      { value: 1000000000000000000n, suffix: "E" },        // Quintillion
-      { value: 1000000000000000n, suffix: "P" },           // Quadrillion
-      { value: 1000000000000n, suffix: "T" },              // Trillion
-      { value: 1000000000n, suffix: "B" },                 // Billion
-      { value: 1000000n, suffix: "M" },                    // Million
-      { value: 1000n, suffix: "K" }                        // Thousand
+      { value: 1000000000000000000000000n, suffix: "Y", badge: "🔵 Sapphire" },  // Septillion
+      { value: 1000000000000000000000n, suffix: "Z", badge: "🔴 Ruby" },     // Sextillion
+      { value: 1000000000000000000n, suffix: "E", badge: "💠 Emerald" },        // Quintillion
+      { value: 1000000000000000n, suffix: "P", badge: "👑 Platinum" },           // Quadrillion
+      { value: 1000000000000n, suffix: "T", badge: "💎 Diamond" },              // Trillion
+      { value: 1000000000n, suffix: "B", badge: "🥇 Gold" },                 // Billion
+      { value: 1000000n, suffix: "M", badge: "🥈 Silver" },                    // Million
+      { value: 1000n, suffix: "K", badge: "🥉 Bronze" }                        // Thousand
     ];
     
     for (let i = 0; i < suffixes.length; i++) {
       if (num >= suffixes[i].value) {
         const divided = Number(num * 100n / suffixes[i].value) / 100;
-        return divided.toFixed(2) + suffixes[i].suffix;
+        return divided.toFixed(2) + suffixes[i].suffix + " " + suffixes[i].badge;
       }
     }
     
@@ -1102,6 +1102,31 @@ function blingPassiveIncome() {
 
 // ========== LEADERBOARD FUNCTIONS ==========
 
+function getBadgeForPoints(pointsStr) {
+  try {
+    const num = BigInt(pointsStr);
+    const badges = [
+      { value: 1000000000000000000000000n, emoji: "🔵" },  // Sapphire
+      { value: 1000000000000000000000n, emoji: "🔴" },     // Ruby
+      { value: 1000000000000000000n, emoji: "💠" },        // Emerald
+      { value: 1000000000000000n, emoji: "👑" },           // Platinum
+      { value: 1000000000000n, emoji: "💎" },              // Diamond
+      { value: 1000000000n, emoji: "🥇" },                 // Gold
+      { value: 1000000n, emoji: "🥈" },                    // Silver
+      { value: 1000n, emoji: "🥉" }                        // Bronze
+    ];
+    
+    for (let i = 0; i < badges.length; i++) {
+      if (num >= badges[i].value) {
+        return badges[i].emoji;
+      }
+    }
+    return "";
+  } catch (error) {
+    return "";
+  }
+}
+
 async function displayPointsLeaderboard() {
   const container = document.getElementById("pointsLeaderboard");
   if (!container) return;
@@ -1120,7 +1145,8 @@ async function displayPointsLeaderboard() {
     players.forEach((player, index) => {
       const isCurrentPlayer = player.telegramId === playerId ? "style='background: rgba(0,255,100,0.1);'" : "";
       const pointsDisplay = formatLargeNumber(player.points);
-      html += `<div class='lb-row' ${isCurrentPlayer}><div class='lb-rank'>#${index + 1}</div><div class='lb-name'>${player.username}</div><div class='lb-points'>${pointsDisplay}</div></div>`;
+      const badge = getBadgeForPoints(player.points);
+      html += `<div class='lb-row' ${isCurrentPlayer}><div class='lb-rank'>#${index + 1}</div><div class='lb-name'>${player.username} ${badge}</div><div class='lb-points'>${pointsDisplay}</div></div>`;
     });
   }
   
